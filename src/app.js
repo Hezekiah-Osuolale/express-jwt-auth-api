@@ -1,4 +1,3 @@
-const config = require("dotenv").config();
 const express = require("express");
 require("./db/mongoose.js");
 const userRouter = require("./routers/user.js");

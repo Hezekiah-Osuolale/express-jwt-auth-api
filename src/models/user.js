@@ -2,14 +2,22 @@ const mongoose = require("mongoose");
 const validator = require("validator");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-
 const userSchema = new mongoose.Schema(
   {
-    name: {
+    fullName: {
       type: String,
       required: true,
       trim: true,
     },
+
+    username: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+      lowercase: true,
+    },
+
     email: {
       type: String,
       unique: true,
@@ -22,6 +30,27 @@ const userSchema = new mongoose.Schema(
         }
       },
     },
+
+    phoneNumber: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+      validate(value) {
+        if (!validator.isMobilePhone(value, "any")) {
+          throw new Error("Phone number is invalid");
+        }
+      },
+    },
+
+    transactionPin: {
+      type: String,
+      required: true,
+      minlength: 4,
+      maxlength: 6,
+      trim: true,
+    },
+
     password: {
       type: String,
       required: true,
@@ -32,6 +61,12 @@ const userSchema = new mongoose.Schema(
           throw new Error('Password cannot contain "password"');
         }
       },
+    },
+
+    referralUsername: {
+      type: String,
+      trim: true,
+      default: null,
     },
 
     tokens: [
